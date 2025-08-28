@@ -12,10 +12,14 @@ public class CategoryController {
     private final CategoryRepository repo;
     public CategoryController(CategoryRepository repo) { this.repo = repo; }
 
-    @GetMapping public List<Category> all() { return repo.findAll(); }
-    @PostMapping public Category create(@RequestBody Category c) { return repo.save(c); }
-    @PutMapping("/{id}") public Category update(@PathVariable Long id, @RequestBody Category c) {
+    @GetMapping 
+    public List<Category> all() { return repo.findAll(); }
+    @PostMapping 
+    public Category create(@RequestBody Category c) { return repo.save(c); }
+    @PutMapping("/{id}")
+    public Category update(@PathVariable Long id, @RequestBody Category c) {
         c.setId(id); return repo.save(c);
     }
-    @DeleteMapping("/{id}") public void delete(@PathVariable Long id) { repo.deleteById(id); }
+    @DeleteMapping("/{id}") 
+    public void delete(@PathVariable Long id) { repo.deleteById(id); }
 }
