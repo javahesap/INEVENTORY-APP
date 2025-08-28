@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Raporlar (Login + Tokenlı İndirme)</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="index.html">Ürün Takip</a>
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <span id="whoami" class="text-muted small me-2"></span>
+      <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal">Giriş</button>
+      <button class="btn btn-outline-secondary btn-sm" id="btnLogout">Çıkış</button>
+    </div>
+  </div>
+</nav>
+
+<main class="container my-4">
+  <h3 class="mb-3">Raporlar</h3>
+
+  <!-- Uyarı -->
+  <div id="authWarn" class="alert alert-warning d-none">
+    Raporları indirebilmek için önce <b>giriş</b> yapın.
+  </div>
+
+  <div class="row g-4">
+    <!-- Ürünler Raporu -->
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header">Ürünler Raporu</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Arama (ad/kod/kategori)</label>
+            <input class="form-control" id="qProducts" placeholder="örn: vida">
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" id="btnProductsPdf">PDF İndir</button>
+            <button class="btn btn-success" id="btnProductsXlsx">Excel İndir</button>
+          </div>
+          <div class="form-text mt-2">Uçlar: <code>/reports/products.pdf</code>, <code>/reports/products.xlsx</code></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stok Hareketleri Raporu -->
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header">Stok Hareketleri Raporu</div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-md-4">
+              <label class="form-label">Başlangıç</label>
+              <input class="form-control" id="from" type="datetime-local">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Bitiş</label>
+              <input class="form-control" id="to" type="datetime-local">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Depo ID (ops.)</label>
+              <input class="form-control" id="warehouseId" type="number" min="1" placeholder="örn: 1">
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-primary" id="btnMovementsPdf">PDF İndir</button>
+          </div>
+          <div class="form-text mt-2">Uç: <code>/reports/movements.pdf</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="loginForm">
+      <div class="modal-header">
+        <h5 class="modal-title">Giriş Yap</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <label class="form-label">Kullanıcı</label>
+          <input class="form-control" id="loginUser" value="admin">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Şifre</label>
+          <input class="form-control" id="loginPass" type="password" value="admin123">
+        </div>
+        <div class="form-text">Varsayılan: <b>admin / admin123</b></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="submit">Giriş</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ---- Yardımcılar ----
+function setWhoAmI(){
+  const token = localStorage.getItem('token') || '';
+  const user  = localStorage.getItem('username') || '';
+  const roles = localStorage.getItem('roles') || '';
+  $('#whoami').text(token ? (user ? (user + (roles? ' ('+roles+')':'')) : 'Giriş yapıldı') : 'Misafir');
+  $('#authWarn').toggleClass('d-none', !!token);
+}
+function toast(msg, type='info'){
+  const el = $('<div class="alert alert-'+type+' position-fixed top-0 end-0 m-3 shadow">'+msg+'</div>');
+  $('body').append(el);
+  setTimeout(()=>el.fadeOut(300, ()=>el.remove()), 2200);
+}
+function downloadAuth(url, filename){
+  const token = localStorage.getItem('token') || '';
+  if (!token) { toast('Önce giriş yapın', 'warning'); return; }
+  fetch(url, { headers: { 'Authorization': 'Bearer ' + token } })
+    .then(r => { if(!r.ok) throw new Error('Hata/Yetki: '+r.status); return r.blob(); })
+    .then(blob => {
+      const isPdf = (filename||'').toLowerCase().endsWith('.pdf');
+      const objUrl = URL.createObjectURL(blob);
+      if (isPdf) {
+        window.open(objUrl, '_blank'); // yeni sekmede aç
+      } else {
+        const a = document.createElement('a');
+        a.href = objUrl;
+        a.download = filename || 'rapor.bin';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+      setTimeout(()=>URL.revokeObjectURL(objUrl), 2000);
+    })
+    .catch(e => toast(e.message, 'danger'));
+}
+
+// ---- Login / Logout ----
+$('#loginForm').on('submit', function(e){
+  e.preventDefault();
+  const payload = { username: $('#loginUser').val(), password: $('#loginPass').val() };
+  $.ajax({
+    url:'/auth/login', method:'POST', contentType:'application/json',
+    data: JSON.stringify(payload)
+  }).done(function(resp){
+    localStorage.setItem('token', resp.token);
+    localStorage.setItem('username', resp.username || '');
+    localStorage.setItem('roles', resp.roles || '');
+    setWhoAmI();
+    const m = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+    if (m) m.hide();
+    toast('Giriş başarılı', 'success');
+  }).fail(function(xhr){
+    toast(xhr.responseJSON?.error || 'Giriş başarısız', 'danger');
+  });
+});
+
+$('#btnLogout').on('click', function(){
+  localStorage.removeItem('token');
+  localStorage.removeItem('username');
+  localStorage.removeItem('roles');
+  setWhoAmI();
+  toast('Çıkış yapıldı', 'secondary');
+});
+
+// ---- Rapor butonları ----
+$('#btnProductsPdf').on('click', function(e){
+  e.preventDefault();
+  const q = $('#qProducts').val() || '';
+  const url = '/reports/products.pdf?q=' + encodeURIComponent(q);
+  downloadAuth(url, 'urunler.pdf');
+});
+$('#btnProductsXlsx').on('click', function(e){
+  e.preventDefault();
+  const q = $('#qProducts').val() || '';
+  const url = '/reports/products.xlsx?q=' + encodeURIComponent(q);
+  downloadAuth(url, 'urunler.xlsx');
+});
+$('#btnMovementsPdf').on('click', function(e){
+  e.preventDefault();
+  const from = $('#from').val();
+  const to   = $('#to').val();
+  const wid  = $('#warehouseId').val();
+  let url = '/reports/movements.pdf?';
+  if (from) url += 'from=' + encodeURIComponent(from) + '&';
+  if (to)   url += 'to='   + encodeURIComponent(to)   + '&';
+  if (wid)  url += 'warehouseId=' + encodeURIComponent(wid) + '&';
+  downloadAuth(url, 'stok_hareketleri.pdf');
+});
+
+// ---- İlk yükleme ----
+document.addEventListener('DOMContentLoaded', setWhoAmI);
+</script>
+</body>
+</html>

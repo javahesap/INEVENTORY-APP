@@ -76,6 +76,30 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
+		<!-- JasperReports (Jakarta uyumlu sürüm) -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.21.3</version>
+		</dependency>
+
+		<!-- (Opsiyonel) Standart fontlar -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>6.21.3</version>
+		</dependency>
+
+		<!-- (Opsiyonel) XLSX export için Apache POI zaten var ise kullanılır; yoksa ekle -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.5</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
