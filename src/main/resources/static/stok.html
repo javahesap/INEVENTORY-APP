@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ürün Takip | Spring Boot + jQuery</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- DataTables + Buttons CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.min.css">
+
+  <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">Ürün Takip</a>
+    <div class="ms-auto d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="users.html">Kullanıcılar</a>
+      <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Giriş</button>
+    </div>
+  </div>
+</nav>
+
+<main class="container my-4">
+  <div class="alert alert-info">Varsayılan kullanıcı: <b>admin / admin123</b></div>
+
+  <ul class="nav nav-tabs" id="appTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-products" type="button">Ürünler</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-categories" type="button">Kategoriler</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-warehouses" type="button">Depolar</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-stocks" type="button">Stoklar</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-movements" type="button">Hareketler</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-suppliers" type="button">Tedarikçiler</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-customers" type="button">Müşteriler</button>
+    </li>
+  </ul>
+
+  <div class="tab-content pt-3">
+    <!-- Products -->
+    <div class="tab-pane fade show active" id="tab-products">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0">Ürünler</h5>
+        <div class="d-flex gap-2">
+          <button class="btn btn-success" id="btnProductsExcelServer">Excel (Server)</button>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="mb-2">
+                  <label class="form-label">Kod</label>
+                  <input class="form-control" id="productCode" required>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Ad</label>
+                  <input class="form-control" id="productName" required>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Açıklama</label>
+                  <textarea class="form-control" id="productDesc"></textarea>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Kategori</label>
+                  <select class="form-select" id="productCategory"></select>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Birim</label>
+                  <input class="form-control" id="productUnit" placeholder="adet / kg / litre">
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Kaydet</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <!-- DataTables (server-side) tablo -->
+          <table class="table table-striped" id="tblProductsDT" style="width:100%">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Kod</th>
+                <th>Ad</th>
+                <th>Kategori</th>
+                <th>Birim</th>
+                <th>Oluşturma</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="tab-pane fade" id="tab-categories">
+      <div class="row g-3">
+        <div class="col-lg-4">
+          <div class="card"><div class="card-body">
+            <form id="categoryForm">
+              <input type="hidden" id="categoryId">
+              <div class="mb-2">
+                <label class="form-label">Ad</label>
+                <input class="form-control" id="categoryName" required>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Açıklama</label>
+                <input class="form-control" id="categoryDesc">
+              </div>
+              <button class="btn btn-primary w-100" type="submit">Kaydet</button>
+            </form>
+          </div></div>
+        </div>
+        <div class="col-lg-8">
+          <table class="table table-striped" id="tblCategories">
+            <thead><tr><th>ID</th><th>Ad</th><th>Açıklama</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Warehouses -->
+    <div class="tab-pane fade" id="tab-warehouses">
+      <div class="row g-3">
+        <div class="col-lg-4">
+          <div class="card"><div class="card-body">
+            <form id="warehouseForm">
+              <input type="hidden" id="warehouseId">
+              <div class="mb-2"><label class="form-label">Ad</label><input class="form-control" id="warehouseName" required></div>
+              <div class="mb-2"><label class="form-label">Lokasyon</label><input class="form-control" id="warehouseLoc"></div>
+              <button class="btn btn-primary w-100" type="submit">Kaydet</button>
+            </form>
+          </div></div>
+        </div>
+        <div class="col-lg-8">
+          <table class="table table-striped" id="tblWarehouses">
+            <thead><tr><th>ID</th><th>Ad</th><th>Lokasyon</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stocks -->
+    <div class="tab-pane fade" id="tab-stocks">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0">Stoklar</h5>
+        <div class="d-flex gap-2">
+          <button class="btn btn-success" id="btnStocksExcelServer">Excel (Server)</button>
+        </div>
+      </div>
+      <!-- DataTables (server-side) tablo -->
+      <table class="table table-striped" id="tblStocksDT" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Ürün</th>
+            <th>Depo</th>
+            <th>Miktar</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Movements -->
+    <div class="tab-pane fade" id="tab-movements">
+      <div class="card mb-3"><div class="card-body">
+        <form id="movementForm" class="row g-2 align-items-end">
+          <div class="col-md-2">
+            <label class="form-label">Tür</label>
+            <select class="form-select" id="movementType">
+              <option value="IN">Giriş</option>
+              <option value="OUT">Çıkış</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Ürün</label>
+            <select class="form-select" id="movementProduct"></select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Depo</label>
+            <select class="form-select" id="movementWarehouse"></select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Miktar</label>
+            <input class="form-control" id="movementQty" type="number" step="0.01">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Birim Fiyat</label>
+            <input class="form-control" id="movementPrice" type="number" step="0.01">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Not</label>
+            <input class="form-control" id="movementNote">
+          </div>
+          <div class="col-12"><button class="btn btn-primary">Kaydet</button></div>
+        </form>
+      </div></div>
+
+      <table class="table table-striped" id="tblMovements">
+        <thead><tr><th>ID</th><th>Tarih</th><th>Tür</th><th>Ürün</th><th>Depo</th><th>Miktar</th><th>Fiyat</th><th>Kullanıcı</th><th>Not</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Suppliers -->
+    <div class="tab-pane fade" id="tab-suppliers">
+      <div class="row g-3">
+        <div class="col-lg-4">
+          <div class="card"><div class="card-body">
+            <form id="supplierForm">
+              <input type="hidden" id="supplierId">
+              <div class="mb-2"><label class="form-label">Ad</label><input class="form-control" id="supplierName" required></div>
+              <div class="mb-2"><label class="form-label">Telefon</label><input class="form-control" id="supplierPhone"></div>
+              <div class="mb-2"><label class="form-label">Email</label><input class="form-control" id="supplierEmail" type="email"></div>
+              <div class="mb-2"><label class="form-label">Adres</label><input class="form-control" id="supplierAddress"></div>
+              <button class="btn btn-primary w-100" type="submit">Kaydet</button>
+            </form>
+          </div></div>
+        </div>
+        <div class="col-lg-8">
+          <table class="table table-striped" id="tblSuppliers">
+            <thead><tr><th>ID</th><th>Ad</th><th>Telefon</th><th>Email</th><th>Adres</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customers -->
+    <div class="tab-pane fade" id="tab-customers">
+      <div class="row g-3">
+        <div class="col-lg-4">
+          <div class="card"><div class="card-body">
+            <form id="customerForm">
+              <input type="hidden" id="customerId">
+              <div class="mb-2"><label class="form-label">Ad</label><input class="form-control" id="customerName" required></div>
+              <div class="mb-2"><label class="form-label">Telefon</label><input class="form-control" id="customerPhone"></div>
+              <div class="mb-2"><label class="form-label">Email</label><input class="form-control" id="customerEmail" type="email"></div>
+              <div class="mb-2"><label class="form-label">Adres</label><input class="form-control" id="customerAddress"></div>
+              <button class="btn btn-primary w-100" type="submit">Kaydet</button>
+            </form>
+          </div></div>
+        </div>
+        <div class="col-lg-8">
+          <table class="table table-striped" id="tblCustomers">
+            <thead><tr><th>ID</th><th>Ad</th><th>Telefon</th><th>Email</th><th>Adres</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Giriş</h5></div>
+      <div class="modal-body">
+        <form id="loginForm">
+          <div class="mb-2"><label class="form-label">Kullanıcı</label><input class="form-control" id="loginUser"></div>
+          <div class="mb-2"><label class="form-label">Şifre</label><input class="form-control" id="loginPass" type="password"></div>
+          <button class="btn btn-primary w-100">Giriş Yap</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Core libs -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables + Buttons + JSZip -->
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+
+<!-- App logic (login, CRUD yardımcıları vs.) -->
+<script src="assets/app.js"></script>
+
+<!-- DataTables init (Products & Stocks) -->
+<script>
+(function(){
+  // setAuthHeader app.js'te tanımlı; yoksa yedek:
+  function _setAuthHeader(xhr){
+    if (window.setAuthHeader) return window.setAuthHeader(xhr);
+    const t = localStorage.getItem('token') || '';
+    if (t) xhr.setRequestHeader('Authorization','Bearer '+t);
+  }
+
+  // PRODUCTS
+  let productsDT;
+  function initProductsDT(){
+    productsDT = new DataTable('#tblProductsDT', {
+      processing: true,
+      serverSide: true,
+      searching: true,
+      ajax: {
+        url: '/api/products/datatable',
+        type: 'POST',
+        contentType: 'application/json',
+        beforeSend: _setAuthHeader,
+        data: function(d){ return JSON.stringify(d); }
+      },
+      columns: [
+        { data: 'id' },
+        { data: 'productCode' },
+        { data: 'name' },
+        { data: 'category' },
+        { data: 'unit' },
+        { data: 'createdAt' }
+      ],
+      order: [[0, 'desc']],
+      layout: {
+        topStart: { buttons: [{ extend: 'excelHtml5', text: 'Excel (Client)', title: 'Urunler' }] }
+      }
+    });
+
+    // Server Excel
+    $('#btnProductsExcelServer').on('click', function(){
+      const params = productsDT.ajax.params();
+      const q = params?.search?.value || '';
+      const colIdx = params?.order?.[0]?.column ?? 0;
+      const dir = params?.order?.[0]?.dir ?? 'asc';
+      const colData = params?.columns?.[colIdx]?.data || 'id';
+      const map = { id:'id', productCode:'productCode', name:'name', category:'category.name', unit:'unit', createdAt:'createdAt' };
+      const sort = encodeURIComponent((map[colData]||'id') + ',' + dir);
+      window.location = '/api/products/export.xlsx?q=' + encodeURIComponent(q) + '&sort=' + sort;
+    });
+  }
+
+  // STOCKS
+  let stocksDT;
+  function initStocksDT(){
+    stocksDT = new DataTable('#tblStocksDT', {
+      processing: true,
+      serverSide: true,
+      searching: true,
+      ajax: {
+        url: '/api/stocks/datatable',
+        type: 'POST',
+        contentType: 'application/json',
+        beforeSend: _setAuthHeader,
+        data: function(d){ return JSON.stringify(d); }
+      },
+      columns: [
+        { data: 'id' },
+        { data: 'product' },
+        { data: 'warehouse' },
+        { data: 'quantity' }
+      ],
+      order: [[0, 'desc']],
+      layout: {
+        topStart: { buttons: [{ extend: 'excelHtml5', text: 'Excel (Client)', title: 'Stoklar' }] }
+      }
+    });
+
+    // Server Excel
+    $('#btnStocksExcelServer').on('click', function(){
+      const params = stocksDT.ajax.params();
+      const q = params?.search?.value || '';
+      const colIdx = params?.order?.[0]?.column ?? 0;
+      const dir = params?.order?.[0]?.dir ?? 'asc';
+      const colData = params?.columns?.[colIdx]?.data || 'id';
+      const map = { id:'id', product:'product.name', warehouse:'warehouse.name', quantity:'quantity' };
+      const sort = encodeURIComponent((map[colData]||'id') + ',' + dir);
+      window.location = '/api/stocks/export.xlsx?q=' + encodeURIComponent(q) + '&sort=' + sort;
+    });
+  }
+
+  // Giriş yaptıktan sonra app.js loadAll çalışıyorsa sorun yok;
+  // DataTables için token gerekeceğinden sayfa açıldığında da deneyelim:
+  document.addEventListener('DOMContentLoaded', function(){
+    const token = localStorage.getItem('token') || '';
+    if (token) {
+      try { initProductsDT(); } catch(e){ console.error(e); }
+      try { initStocksDT(); } catch(e){ console.error(e); }
+    }
+  });
+
+  // Login form başarıyla token aldıktan sonra da init edelim
+  $(document).on('login-success', function(){
+    try { initProductsDT(); } catch(e){}
+    try { initStocksDT(); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
