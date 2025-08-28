@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_movements" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="b2222222-2222-2222-2222-b22222222222">
+	<property name="com.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<parameter name="P_FROM" class="java.sql.Timestamp"/>
+	<parameter name="P_TO" class="java.sql.Timestamp"/>
+	<parameter name="P_WAREHOUSE_ID" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT sm.id,
+             sm.movement_date,
+             sm.movement_type,
+             sm.quantity,
+             sm.unit_price,
+             p.name AS product,
+             w.name AS warehouse,
+             u.username AS user,
+             sm.note
+      FROM stock_movements sm
+      LEFT JOIN products   p ON p.id = sm.product_id
+      LEFT JOIN warehouses w ON w.id = sm.warehouse_id
+      LEFT JOIN users      u ON u.id = sm.user_id
+      WHERE ( $P{P_FROM} IS NULL OR sm.movement_date >= $P{P_FROM} )
+        AND ( $P{P_TO}   IS NULL OR sm.movement_date <  $P{P_TO}   )
+        AND ( $P{P_WAREHOUSE_ID} IS NULL OR sm.warehouse_id = $P{P_WAREHOUSE_ID} )
+      ORDER BY sm.movement_date DESC, sm.id DESC]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="movement_date" class="java.sql.Timestamp"/>
+	<field name="movement_type" class="java.lang.String"/>
+	<field name="quantity" class="java.math.BigDecimal"/>
+	<field name="unit_price" class="java.math.BigDecimal"/>
+	<field name="product" class="java.lang.String"/>
+	<field name="warehouse" class="java.lang.String"/>
+	<field name="user" class="java.lang.String"/>
+	<field name="note" class="java.lang.String"/>
+	<variable name="TOTAL_IN" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{movement_type} != null && $F{movement_type}.equals("IN") ? ($F{quantity}==null? java.math.BigDecimal.ZERO : $F{quantity}) : java.math.BigDecimal.ZERO]]></variableExpression>
+		<initialValueExpression><![CDATA[java.math.BigDecimal.ZERO]]></initialValueExpression>
+	</variable>
+	<variable name="TOTAL_OUT" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{movement_type} != null && $F{movement_type}.equals("OUT") ? ($F{quantity}==null? java.math.BigDecimal.ZERO : $F{quantity}) : java.math.BigDecimal.ZERO]]></variableExpression>
+		<initialValueExpression><![CDATA[java.math.BigDecimal.ZERO]]></initialValueExpression>
+	</variable>
+	<title>
+		<band height="70">
+			<staticText>
+				<reportElement x="0" y="0" width="535" height="24" uuid="2e53d906-67d0-491e-8486-762df3378569"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Stok Hareketleri Raporu]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="30" width="535" height="18" uuid="69710a8e-bc99-4748-8a9b-082ce73a901e"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Tarih: " + (
+            $P{P_FROM} == null ? "-" : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{P_FROM})
+          ) + " .. " + (
+            $P{P_TO} == null ? "-" : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format($P{P_TO})
+          ) + "   |   Depo: " + ($P{P_WAREHOUSE_ID} == null ? "Tümü" : String.valueOf($P{P_WAREHOUSE_ID}))]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="535" height="20" backcolor="#EEEEEE" uuid="25c9c646-4be2-4627-bf78-878ac128f4f2"/>
+				<staticText>
+					<reportElement x="0" y="0" width="35" height="20" uuid="8b5defa7-e88a-4cbc-8f99-95eef667eae8"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="35" y="0" width="110" height="20" uuid="22a41db4-e0ad-4733-91ce-c15f31d79ef9"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tarih]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="145" y="0" width="40" height="20" uuid="c72083f5-d9d6-40da-b7af-44424356508c"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tür]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="185" y="0" width="120" height="20" uuid="0e6628ea-51a0-4510-ba34-6b1baf441ef3"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ürün]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="90" height="20" uuid="3622b420-f521-4948-a84c-20997f782a92"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Depo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="395" y="0" width="55" height="20" uuid="66d4d2bb-3b2f-42a5-ae52-5a2eb8fecd83"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Miktar]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="450" y="0" width="60" height="20" uuid="76c61063-240c-415a-8f41-559bb3019ca0"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fiyat]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="510" y="0" width="25" height="20" uuid="d6c0a07f-54f1-4123-ab41-45cf86167fcd"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[U]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18">
+			<textField>
+				<reportElement x="0" y="0" width="35" height="18" uuid="40a50de0-5c4f-4aa1-a495-765c539f514e"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd HH:mm">
+				<reportElement x="35" y="0" width="110" height="18" uuid="428cfa38-9c9b-4919-bc81-ec43eb612220"/>
+				<textFieldExpression><![CDATA[$F{movement_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="0" width="40" height="18" uuid="2c0d872a-9b53-4e54-a7fd-b0d854d2312c"/>
+				<textFieldExpression><![CDATA[$F{movement_type}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="185" y="0" width="120" height="18" uuid="ec8a12c8-67c8-4457-ab20-0e2c359fbeb6"/>
+				<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="305" y="0" width="90" height="18" uuid="5155f5ae-e754-4841-af2e-2f4005f0ed0f"/>
+				<textFieldExpression><![CDATA[$F{warehouse}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.##">
+				<reportElement x="395" y="0" width="55" height="18" uuid="bfd15a60-0795-48c0-8d8d-ca50dfbf03b0"/>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="450" y="0" width="60" height="18" uuid="b231b200-024a-4129-826e-6c9947c76d9c"/>
+				<textFieldExpression><![CDATA[$F{unit_price}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="510" y="0" width="25" height="18" uuid="a2a4d878-c725-4030-a2f6-69d1893566c7"/>
+				<textFieldExpression><![CDATA[$F{user}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="60">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="535" height="48" backcolor="#F6F6F6" uuid="86635685-3bde-435f-bb15-2723d9cd5a6d"/>
+				<staticText>
+					<reportElement x="0" y="4" width="150" height="18" uuid="abe23c84-d699-4384-b350-624482a040f8"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Toplam Giriş (IN):]]></text>
+				</staticText>
+				<textField pattern="#,##0.##">
+					<reportElement x="160" y="4" width="120" height="18" uuid="426f579a-72f5-4dc2-89da-8e84e45d7159"/>
+					<textFieldExpression><![CDATA[$V{TOTAL_IN}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="26" width="150" height="18" uuid="c045c9c9-ce23-47d2-9a74-8f102fbf7fbd"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Toplam Çıkış (OUT):]]></text>
+				</staticText>
+				<textField pattern="#,##0.##">
+					<reportElement x="160" y="26" width="120" height="18" uuid="7cac94b3-54b1-4e55-a855-92176c9ae076"/>
+					<textFieldExpression><![CDATA[$V{TOTAL_OUT}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</summary>
+</jasperReport>

@@ -37,16 +37,21 @@ public class SecurityConfig {
     private String allowedOrigins;
 
     @Bean
+    
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index.html", "/assets/**", "/users.html",  "/stock.html","/auth/**").permitAll()
+                // 1) Statikler (HTML/CSS/JS) serbest
                 .requestMatchers(HttpMethod.GET, "/", "/index.html", "/**/*.html", "/assets/**").permitAll()
-                
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // 2) Login uçları serbest
+                .requestMatchers("/auth/**").permitAll()
+                // 3) Rapor API’leri KORUMALI (ADMIN önerilir)
+                .requestMatchers("/reports/**").hasRole("ADMIN")
+                // (İstersen sadece login olanlar görsün: .requestMatchers("/reports/**").authenticated() )
+                // 4) Diğer tüm API'ler korumalı
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
