@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+  name="productWithCategory_body" pageWidth="595" pageHeight="842" columnWidth="535"
+  leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0"
+  uuid="44444444-4444-4444-4444-444444444444">
+
+  <parameter name="P_QUERY" class="java.lang.String"/>
+
+  <queryString><![CDATA[
+    SELECT p.id, p.product_code, p.name,
+           COALESCE(c.name,'') AS category,
+           COALESCE(p.unit,'') AS unit,
+           p.created_at
+    FROM products p
+    LEFT JOIN categories c ON c.id = p.category_id
+    WHERE ($P{P_QUERY} IS NULL OR $P{P_QUERY} = ''
+           OR LOWER(p.name) LIKE LOWER(CONCAT('%',$P{P_QUERY},'%'))
+           OR LOWER(p.product_code) LIKE LOWER(CONCAT('%',$P{P_QUERY},'%'))
+           OR LOWER(c.name) LIKE LOWER(CONCAT('%',$P{P_QUERY},'%')))
+    ORDER BY c.name, p.name
+  ]]></queryString>
+
+  <field name="id" class="java.lang.Long"/>
+  <field name="product_code" class="java.lang.String"/>
+  <field name="name" class="java.lang.String"/>
+  <field name="category" class="java.lang.String"/>
+  <field name="unit" class="java.lang.String"/>
+  <field name="created_at" class="java.sql.Timestamp"/>
+
+  <group name="grpCategory">
+    <groupExpression><![CDATA[$F{category}]]></groupExpression>
+    <groupHeader>
+      <band height="18">
+        <textField>
+          <reportElement x="0" y="0" width="535" height="18" backcolor="#EEEEEE" mode="Opaque"/>
+          <textElement><font isBold="true"/></textElement>
+          <textFieldExpression><![CDATA["Kategori: " + $F{category}]]></textFieldExpression>
+        </textField>
+      </band>
+    </groupHeader>
+  </group>
+
+  <columnHeader>
+    <band height="18">
+      <frame>
+        <reportElement x="0" y="0" width="535" height="18" backcolor="#F0F0F0" mode="Opaque"/>
+        <staticText><reportElement x="0" y="0" width="40" height="18"/><text><![CDATA[ID]]></text></staticText>
+        <staticText><reportElement x="40" y="0" width="90" height="18"/><text><![CDATA[Kod]]></text></staticText>
+        <staticText><reportElement x="130" y="0" width="200" height="18"/><text><![CDATA[Ürün]]></text></staticText>
+        <staticText><reportElement x="330" y="0" width="100" height="18"/><text><![CDATA[Birim]]></text></staticText>
+        <staticText><reportElement x="430" y="0" width="105" height="18"/><text><![CDATA[Oluşturma]]></text></staticText>
+      </frame>
+    </band>
+  </columnHeader>
+
+  <detail>
+    <band height="18">
+      <textField><reportElement x="0" y="0" width="40" height="18"/><textFieldExpression><![CDATA[$F{id}]]></textFieldExpression></textField>
+      <textField><reportElement x="40" y="0" width="90" height="18"/><textFieldExpression><![CDATA[$F{product_code}]]></textFieldExpression></textField>
+      <textField><reportElement x="130" y="0" width="200" height="18"/><textFieldExpression><![CDATA[$F{name}]]></textFieldExpression></textField>
+      <textField><reportElement x="330" y="0" width="100" height="18"/><textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression></textField>
+      <textField pattern="yyyy-MM-dd"><reportElement x="430" y="0" width="105" height="18"/><textFieldExpression><![CDATA[$F{created_at}]]></textFieldExpression></textField>
+    </band>
+  </detail>
+</jasperReport>

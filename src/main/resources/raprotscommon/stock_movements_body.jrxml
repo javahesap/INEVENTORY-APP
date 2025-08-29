@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+  name="stock_movements_body" pageWidth="595" pageHeight="842" columnWidth="535"
+  leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0"
+  uuid="33333333-3333-3333-3333-333333333333">
+
+  <parameter name="P_FROM" class="java.sql.Timestamp"/>
+  <parameter name="P_TO" class="java.sql.Timestamp"/>
+  <parameter name="P_WAREHOUSE_ID" class="java.lang.Long"/>
+
+  <queryString><![CDATA[
+    SELECT sm.id, sm.movement_date, sm.movement_type, sm.quantity, sm.unit_price,
+           p.name AS product, w.name AS warehouse, u.username AS user, sm.note
+    FROM stock_movements sm
+    LEFT JOIN products p ON p.id = sm.product_id
+    LEFT JOIN warehouses w ON w.id = sm.warehouse_id
+    LEFT JOIN users u ON u.id = sm.user_id
+    WHERE ($P{P_FROM} IS NULL OR sm.movement_date >= $P{P_FROM})
+      AND ($P{P_TO} IS NULL OR sm.movement_date < $P{P_TO})
+      AND ($P{P_WAREHOUSE_ID} IS NULL OR sm.warehouse_id = $P{P_WAREHOUSE_ID})
+    ORDER BY sm.movement_date DESC, sm.id DESC
+  ]]></queryString>
+
+  <field name="id" class="java.lang.Long"/>
+  <field name="movement_date" class="java.sql.Timestamp"/>
+  <field name="movement_type" class="java.lang.String"/>
+  <field name="quantity" class="java.math.BigDecimal"/>
+  <field name="unit_price" class="java.math.BigDecimal"/>
+  <field name="product" class="java.lang.String"/>
+  <field name="warehouse" class="java.lang.String"/>
+  <field name="user" class="java.lang.String"/>
+  <field name="note" class="java.lang.String"/>
+
+  <columnHeader>
+    <band height="20">
+      <frame>
+        <reportElement x="0" y="0" width="535" height="20" backcolor="#EEEEEE" mode="Opaque"/>
+        <staticText><reportElement x="0" y="0" width="35" height="20"/><text><![CDATA[ID]]></text></staticText>
+        <staticText><reportElement x="35" y="0" width="110" height="20"/><text><![CDATA[Tarih]]></text></staticText>
+        <staticText><reportElement x="145" y="0" width="40" height="20"/><text><![CDATA[Tür]]></text></staticText>
+        <staticText><reportElement x="185" y="0" width="120" height="20"/><text><![CDATA[Ürün]]></text></staticText>
+        <staticText><reportElement x="305" y="0" width="90" height="20"/><text><![CDATA[Depo]]></text></staticText>
+        <staticText><reportElement x="395" y="0" width="55" height="20"/><text><![CDATA[Miktar]]></text></staticText>
+        <staticText><reportElement x="450" y="0" width="60" height="20"/><text><![CDATA[Fiyat]]></text></staticText>
+        <staticText><reportElement x="510" y="0" width="25" height="20"/><text><![CDATA[U]]></text></staticText>
+      </frame>
+    </band>
+  </columnHeader>
+
+  <detail>
+    <band height="18">
+      <textField><reportElement x="0" y="0" width="35" height="18"/><textFieldExpression><![CDATA[$F{id}]]></textFieldExpression></textField>
+      <textField pattern="yyyy-MM-dd HH:mm"><reportElement x="35" y="0" width="110" height="18"/><textFieldExpression><![CDATA[$F{movement_date}]]></textFieldExpression></textField>
+      <textField><reportElement x="145" y="0" width="40" height="18"/><textFieldExpression><![CDATA[$F{movement_type}]]></textFieldExpression></textField>
+      <textField><reportElement x="185" y="0" width="120" height="18"/><textFieldExpression><![CDATA[$F{product}]]></textFieldExpression></textField>
+      <textField><reportElement x="305" y="0" width="90" height="18"/><textFieldExpression><![CDATA[$F{warehouse}]]></textFieldExpression></textField>
+      <textField pattern="#,##0.##"><reportElement x="395" y="0" width="55" height="18"/><textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression></textField>
+      <textField pattern="#,##0.00"><reportElement x="450" y="0" width="60" height="18"/><textFieldExpression><![CDATA[$F{unit_price}]]></textFieldExpression></textField>
+      <textField><reportElement x="510" y="0" width="25" height="18"/><textFieldExpression><![CDATA[$F{user}]]></textFieldExpression></textField>
+    </band>
+  </detail>
+</jasperReport>
