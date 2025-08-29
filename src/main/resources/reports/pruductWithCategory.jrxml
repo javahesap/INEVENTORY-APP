@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProductsReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6a98f3e6-6b7b-4d8b-9a57-0f1c2b3d4e5f">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MysqlLocal"/>
+	<style name="GroupHeaderStyle" mode="Opaque">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Math.abs(($F{unit}==null?0:$F{unit}.hashCode()))%4)==0]]></conditionExpression>
+			<style backcolor="#E3F2FD"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Math.abs(($F{unit}==null?0:$F{unit}.hashCode()))%4)==1]]></conditionExpression>
+			<style backcolor="#E8F5E9"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Math.abs(($F{unit}==null?0:$F{unit}.hashCode()))%4)==2]]></conditionExpression>
+			<style backcolor="#FFF3E0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Math.abs(($F{unit}==null?0:$F{unit}.hashCode()))%4)==3]]></conditionExpression>
+			<style backcolor="#F3E5F5"/>
+		</conditionalStyle>
+	</style>
+	<queryString language="SQL">
+		<![CDATA[SELECT p.id,
+       p.product_code,
+       p.name,
+       COALESCE(c.name,'')  AS category,
+       COALESCE(p.unit,'')  AS unit,
+       p.created_at
+FROM products p
+LEFT JOIN categories c ON c.id = p.category_id
+ORDER BY unit, name]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="product_code" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="category" class="java.lang.String"/>
+	<field name="unit" class="java.lang.String"/>
+	<field name="created_at" class="java.sql.Timestamp"/>
+	<group name="UnitGroup">
+		<groupExpression><![CDATA[$F{unit}]]></groupExpression>
+		<groupHeader>
+			<band height="26">
+				<frame>
+					<reportElement style="GroupHeaderStyle" mode="Opaque" x="0" y="0" width="535" height="22" uuid="3e61a9f4-4f18-4d5b-9a0a-0c7f7e1b2c33"/>
+					<staticText>
+						<reportElement x="6" y="3" width="60" height="16" uuid="a1b2c3d4-5e6f-4789-9abc-def012345678"/>
+						<textElement>
+							<font isBold="true"/>
+						</textElement>
+						<text><![CDATA[Birim:]]></text>
+					</staticText>
+					<textField>
+						<reportElement x="66" y="3" width="463" height="16" uuid="b2c3d4e5-6f70-4a81-92a3-b4c5d6e7f809"/>
+						<textElement>
+							<font isBold="true"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{unit}==null || $F{unit}.trim().length()==0 ? "—" : $F{unit}]]></textFieldExpression>
+					</textField>
+				</frame>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="60">
+			<staticText>
+				<reportElement x="0" y="0" width="535" height="24" uuid="f22ed61b-a581-42ff-8702-2701e2721402"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ürünler Raporu]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="535" height="20" backcolor="#EEEEEE" uuid="9a22fd47-4d0c-4119-96e3-2185f67d1449"/>
+				<staticText>
+					<reportElement x="0" y="0" width="40" height="20" uuid="b4a3f0c5-b7b9-4a8b-9d1c-1d8894b0a001"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="0" width="90" height="20" uuid="3e5b2c2b-2d0e-4a7c-9f2b-9a8f5b2e8e02"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Kod]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="160" height="20" uuid="93d1aa2c-5a8e-4a29-8b77-6b9b3d7e3f03"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ad]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="290" y="0" width="120" height="20" uuid="7a6f0e1a-7a4d-4e7b-8d3f-6a2b1c0d4f04"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Kategori]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="410" y="0" width="60" height="20" uuid="6b3f2e9a-9a22-4a1c-88a2-3ad6b7e9c405"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Birim]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="470" y="0" width="65" height="20" uuid="1c2d3e4f-5a6b-7c8d-9e01-2f3a4b5c6d06"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Oluş.]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18">
+			<textField>
+				<reportElement x="0" y="0" width="40" height="18" uuid="f4b3a2c1-9d8e-4f7a-8b6c-5a4d3e2f1001"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="0" width="90" height="18" uuid="0a1b2c3d-4e5f-6789-abcd-ef0123451002"/>
+				<textFieldExpression><![CDATA[$F{product_code}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="130" y="0" width="160" height="18" uuid="2f3e4d5c-6b7a-4988-9c0d-1e2f3a4b1003"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="0" width="120" height="18" uuid="3a4b5c6d-7e8f-4a9b-8c0d-1e2f3a4b1004"/>
+				<textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="410" y="0" width="60" height="18" uuid="4b5c6d7e-8f9a-4b0c-9d1e-2f3a4b5c1005"/>
+				<textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd">
+				<reportElement x="470" y="0" width="65" height="18" uuid="5c6d7e8f-9a0b-4c1d-8e2f-3a4b5c6d1006"/>
+				<textFieldExpression><![CDATA[$F{created_at}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="18">
+			<textField>
+				<reportElement x="0" y="0" width="535" height="18" uuid="a6221a62-4632-4adc-9ccc-93e94c01b9e1"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Sayfa " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

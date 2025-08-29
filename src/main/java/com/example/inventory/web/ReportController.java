@@ -89,4 +89,30 @@ public class ReportController {
             .contentType(MediaType.APPLICATION_PDF)
             .body(pdf);
     }
+    
+    
+    
+    
+    @GetMapping("/productswithcategory.pdf")
+    public ResponseEntity<byte[]> productsPdf() throws Exception {
+        Map<String,Object> params = new HashMap<>();
+        // jrxml’de parametre yok, o yüzden boş bırakabiliriz
+
+        JasperPrint jp = jasper.fillWithJdbc("reports/pruductWithCategory.jrxml", params);
+        byte[] pdf = jasper.exportPdf(jp);
+
+        String filename = URLEncoder.encode("urunler.pdf", StandardCharsets.UTF_8).replace("+","%20");
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''"+filename)
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(pdf);
+    }
+
+    
+    
+    
+    
+    
+    
+    
 }

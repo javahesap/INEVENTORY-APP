@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-    name="products" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="a1111111-1111-1111-1111-a11111111111">
-    <property name="com.jasperreports.export.xls.detect.cell.type" value="true"/>
-
-    <!-- Parametre -->
-    <parameter name="P_QUERY" class="java.lang.String"/>
-
-    <!-- Sorgu -->
-    <queryString><![CDATA[
-        SELECT p.id,
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="products" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="a1111111-1111-1111-1111-a11111111111">
+	<property name="com.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<parameter name="P_QUERY" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT p.id,
                p.product_code,
                p.name,
                COALESCE(c.name,'') AS category,
@@ -22,68 +16,116 @@
                 OR LOWER(p.name)         LIKE LOWER(CONCAT('%', $P{P_QUERY}, '%'))
                 OR LOWER(p.product_code) LIKE LOWER(CONCAT('%', $P{P_QUERY}, '%'))
                 OR LOWER(c.name)         LIKE LOWER(CONCAT('%', $P{P_QUERY}, '%')) )
-        ORDER BY p.id DESC
-    ]]></queryString>
-
-    <!-- Alanlar -->
-    <field name="id" class="java.lang.Long"/>
-    <field name="product_code" class="java.lang.String"/>
-    <field name="name" class="java.lang.String"/>
-    <field name="category" class="java.lang.String"/>
-    <field name="unit" class="java.lang.String"/>
-    <field name="created_at" class="java.sql.Timestamp"/>
-
-    <!-- Başlık -->
-    <title>
-        <band height="60">
-            <staticText>
-                <reportElement x="0" y="0" width="535" height="24"/>
-                <textElement textAlignment="Center"><font size="16" isBold="true"/></textElement>
-                <text><![CDATA[Ürünler Raporu]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="0" y="28" width="535" height="20"/>
-                <textElement textAlignment="Center"><font size="10"/></textElement>
-                <textFieldExpression><![CDATA["Filtre: " + ( $P{P_QUERY} == null || $P{P_QUERY}.isEmpty() ? "Yok" : $P{P_QUERY} )]]></textFieldExpression>
-            </textField>
-        </band>
-    </title>
-
-    <!-- Sütun Başlıkları -->
-    <columnHeader>
-        <band height="20">
-            <frame>
-                <reportElement x="0" y="0" width="535" height="20" backcolor="#EEEEEE" mode="Opaque"/>
-                <staticText><reportElement x="0"   y="0" width="40"  height="20"/><textElement><font isBold="true"/></textElement><text><![CDATA[ID]]></text></staticText>
-                <staticText><reportElement x="40"  y="0" width="90"  height="20"/><textElement><font isBold="true"/></textElement><text><![CDATA[Kod]]></text></staticText>
-                <staticText><reportElement x="130" y="0" width="160" height="20"/><textElement><font isBold="true"/></textElement><text><![CDATA[Ad]]></text></staticText>
-                <staticText><reportElement x="290" y="0" width="120" height="20"/><textElement><font isBold="true"/></textElement><text><![CDATA[Kategori]]></text></staticText>
-                <staticText><reportElement x="410" y="0" width="60"  height="20"/><textElement><font isBold="true"/></textElement><text><![CDATA[Birim]]></text></staticText>
-                <staticText><reportElement x="470" y="0" width="65"  height="20"/><textElement><font isBold="true"/></textElement><text><![CDATA[Oluş.]]></text></staticText>
-            </frame>
-        </band>
-    </columnHeader>
-
-    <!-- Detay -->
-    <detail>
-        <band height="18">
-            <textField><reportElement x="0"   y="0" width="40"  height="18"/><textFieldExpression><![CDATA[$F{id}]]></textFieldExpression></textField>
-            <textField><reportElement x="40"  y="0" width="90"  height="18"/><textFieldExpression><![CDATA[$F{product_code}]]></textFieldExpression></textField>
-            <textField><reportElement x="130" y="0" width="160" height="18"/><textFieldExpression><![CDATA[$F{name}]]></textFieldExpression></textField>
-            <textField><reportElement x="290" y="0" width="120" height="18"/><textFieldExpression><![CDATA[$F{category}]]></textFieldExpression></textField>
-            <textField><reportElement x="410" y="0" width="60"  height="18"/><textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression></textField>
-            <textField pattern="yyyy-MM-dd"><reportElement x="470" y="0" width="65" height="18"/><textFieldExpression><![CDATA[$F{created_at}]]></textFieldExpression></textField>
-        </band>
-    </detail>
-
-    <!-- Sayfa Altı -->
-    <pageFooter>
-        <band height="18">
-            <textField>
-                <reportElement x="0" y="0" width="535" height="18"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA["Sayfa " + $V{PAGE_NUMBER}]]></textFieldExpression>
-            </textField>
-        </band>
-    </pageFooter>
+        ORDER BY p.id DESC]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="product_code" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="category" class="java.lang.String"/>
+	<field name="unit" class="java.lang.String"/>
+	<field name="created_at" class="java.sql.Timestamp"/>
+	<title>
+		<band height="60">
+			<staticText>
+				<reportElement x="0" y="0" width="535" height="24" uuid="f22ed61b-a581-42ff-8702-2701e2721402"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ürünler Raporu]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="28" width="535" height="20" uuid="f6cbdac8-57d3-4c23-9bad-ea3ae26eb477"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Filtre: " + ( $P{P_QUERY} == null || $P{P_QUERY}.isEmpty() ? "Yok" : $P{P_QUERY} )]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="535" height="20" backcolor="#EEEEEE" uuid="9a22fd47-4d0c-4119-96e3-2185f67d1449"/>
+				<staticText>
+					<reportElement x="0" y="0" width="40" height="20" uuid="6dd32cbc-0ad0-4ff5-b150-d1d8f0faa0ef"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="0" width="90" height="20" uuid="9467d7dd-4f92-44c0-9ffd-284bde3578b6"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Kod]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="160" height="20" uuid="ba7db714-9a05-430e-85ee-b5b4c7c48874"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ad]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="290" y="0" width="120" height="20" uuid="fcbef534-e09b-49a4-a4ce-2bcf030c3832"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Kategori]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="410" y="0" width="60" height="20" uuid="a3089590-c4de-4b9e-b46c-dfedae7388f0"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Birim]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="470" y="0" width="65" height="20" uuid="2c2133bf-afe8-46a3-b358-0dbaab520954"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Oluş.]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18">
+			<textField>
+				<reportElement x="0" y="0" width="40" height="18" uuid="444a73e2-5c74-406f-92f6-3d3b420ab336"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="0" width="90" height="18" uuid="939202ab-b157-44a5-97d6-a5bfda4777a0"/>
+				<textFieldExpression><![CDATA[$F{product_code}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="130" y="0" width="160" height="18" uuid="941aff2e-ede8-4ee3-876c-34ee50a773a1"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="0" width="120" height="18" uuid="9a11e8aa-0049-4493-8ed0-ec978775d581"/>
+				<textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="410" y="0" width="60" height="18" uuid="8680d8ab-232e-4e12-bccf-093c118f1f45"/>
+				<textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd">
+				<reportElement x="470" y="0" width="65" height="18" uuid="ed075e51-76d2-441d-bc95-45d774a731bb"/>
+				<textFieldExpression><![CDATA[$F{created_at}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="18">
+			<textField>
+				<reportElement x="0" y="0" width="535" height="18" uuid="a6221a62-4632-4adc-9ccc-93e94c01b9e1"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Sayfa " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
 </jasperReport>

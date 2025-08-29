@@ -39,6 +39,7 @@
           <div class="d-flex gap-2">
             <button class="btn btn-primary" id="btnProductsPdf">PDF İndir</button>
             <button class="btn btn-success" id="btnProductsXlsx">Excel İndir</button>
+            <button class="btn btn-secondary" id="btnProducts2Pdf">Category With Prudct</button>
           </div>
           <div class="form-text mt-2">Uçlar: <code>/reports/products.pdf</code>, <code>/reports/products.xlsx</code></div>
         </div>
@@ -191,6 +192,12 @@ $('#btnMovementsPdf').on('click', function(e){
   if (wid)  url += 'warehouseId=' + encodeURIComponent(wid) + '&';
   downloadAuth(url, 'stok_hareketleri.pdf');
 });
+
+$('#btnProducts2Pdf').on('click', function(e){
+	  e.preventDefault();
+	  downloadAuth('/reports/productswithcategory.pdf', 'urunler2.pdf');
+	});
+
 
 // ---- İlk yükleme ----
 document.addEventListener('DOMContentLoaded', setWhoAmI);

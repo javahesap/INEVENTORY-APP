@@ -47,4 +47,9 @@ public class JasperReportService {
     public byte[] exportHtml(JasperPrint print) throws JRException {
         return JasperExportManager.exportReportToXml(print).getBytes(); // basit HTML yerine XML; istersen HtmlExporter kullan
     }
+    
+    
+    
+    
+    
 }
