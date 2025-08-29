@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>📊 Raporlar</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: var(--bs-body-bg); }
+    .page-max { max-width: 1100px; }
+    .brand-badge { font-size: .95rem; }
+    .card .form-control::placeholder { color: #a7a7a7; }
+    .btn-w { min-width: 120px; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+  <div class="container page-max">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#">
+      <span>📊</span><span>Raporlar</span>
+      <span class="badge text-bg-secondary brand-badge">Subreport Master</span>
+    </a>
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <span id="whoami" class="text-muted small me-2">Misafir</span>
+      <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal" id="btnShowLogin">Giriş</button>
+      <button class="btn btn-outline-secondary btn-sm" id="btnLogout">Çıkış</button>
+    </div>
+  </div>
+</nav>
+
+<main class="container my-4 page-max">
+
+  <div id="authWarn" class="alert alert-warning d-flex align-items-center gap-2 d-none" role="alert">
+    <span>⚠️</span>
+    <div>Raporları indirebilmek için önce <b>giriş</b> yapın.</div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Ürünler -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header fw-semibold">Ürünler</div>
+        <div class="card-body">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-7">
+              <label for="qProducts" class="form-label mb-1">Arama (kod/ad)</label>
+              <input class="form-control" id="qProducts" placeholder="örn: vida, 12x50, sku123">
+            </div>
+            <div class="col-md-5 d-flex gap-2">
+              <button class="btn btn-primary btn-w" id="btnProductsPdf">PDF</button>
+              <button class="btn btn-success btn-w" id="btnProductsXlsx">Excel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ürün + Kategori -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header fw-semibold">Ürünler + Kategori</div>
+        <div class="card-body">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-7">
+              <label for="qProducts2" class="form-label mb-1">Arama (kategori/ürün adı)</label>
+              <input class="form-control" id="qProducts2" placeholder="örn: elektronik, vida">
+            </div>
+            <div class="col-md-5 d-flex gap-2">
+              <button class="btn btn-primary btn-w" id="btnProducts2Pdf">PDF</button>
+              <button class="btn btn-success btn-w" id="btnProducts2Xlsx">Excel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stok Hareketleri -->
+    <div class="col-lg-12">
+      <div class="card shadow-sm">
+        <div class="card-header fw-semibold">Stok Hareketleri</div>
+        <div class="card-body">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+              <label for="from" class="form-label mb-1">Başlangıç</label>
+              <input class="form-control" type="datetime-local" id="from">
+            </div>
+            <div class="col-md-3">
+              <label for="to" class="form-label mb-1">Bitiş</label>
+              <input class="form-control" type="datetime-local" id="to">
+            </div>
+            <div class="col-md-2">
+              <label for="warehouseId" class="form-label mb-1">Depo ID (ops.)</label>
+              <input class="form-control" type="number" id="warehouseId" placeholder="örn: 2">
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+              <button class="btn btn-primary btn-w" id="btnMovementsPdf">PDF</button>
+              <button class="btn btn-success btn-w" id="btnMovementsXlsx">Excel</button>
+            </div>
+          </div>
+          <div class="form-text mt-2">
+            Tarih alanları boş bırakılırsa ilgili filtre uygulanmaz.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Toasts -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+  <div id="appToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toastBody">Mesaj</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="loginForm">
+      <div class="modal-header">
+        <h5 class="modal-title">Giriş Yap</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Kullanıcı Adı</label>
+        <input class="form-control mb-3" id="loginUser" placeholder="admin" value="admin">
+        <label class="form-label">Şifre</label>
+        <input class="form-control" id="loginPass" type="password" placeholder="••••••••" value="admin123">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="submit" id="btnDoLogin">Giriş</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ---------------------------
+  // Helpers
+  // ---------------------------
+  function showToast(msg) {
+    document.getElementById('toastBody').textContent = msg;
+    const t = new bootstrap.Toast(document.getElementById('appToast'), { delay: 2500 });
+    t.show();
+  }
+
+  function valToIsoSeconds(v) {
+    // "2025-08-29T14:30" -> "2025-08-29T14:30:00"
+    return v ? (v.length === 16 ? v + ':00' : v) : '';
+  }
+
+  function setWhoAmI() {
+    const token = localStorage.getItem('token');
+    const name  = localStorage.getItem('username');
+    $('#whoami').text(token ? (name ? ('Girişli: ' + name) : 'Giriş yapıldı') : 'Misafir');
+    $('#authWarn').toggleClass('d-none', !!token);
+    // Butonları da kilitle/serbest bırak
+    const disabled = !token;
+    $('#btnProductsPdf, #btnProductsXlsx, #btnProducts2Pdf, #btnProducts2Xlsx, #btnMovementsPdf, #btnMovementsXlsx')
+      .prop('disabled', disabled)
+      .toggleClass('disabled', disabled);
+  }
+
+  async function downloadAuth(url, filename){
+    const token = localStorage.getItem('token');
+    if(!token){ showToast('Önce giriş yapın.'); return; }
+
+    try{
+      const resp = await fetch(url, { headers: { 'Authorization':'Bearer '+token } });
+      if(!resp.ok){
+        let msg = 'İndirme başarısız (' + resp.status + ')';
+        try {
+          const ct = resp.headers.get('Content-Type') || '';
+          if (ct.includes('application/json')) {
+            const j = await resp.json();
+            msg = j.message || j.error || JSON.stringify(j);
+          } else {
+            const t = await resp.text();
+            if (t) msg = t;
+          }
+        } catch(_) {}
+        showToast(msg);
+        return;
+      }
+      const blob = await resp.blob();
+      const urlObj = URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=urlObj; a.download=filename; a.style.display='none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(urlObj), 1500);
+    }catch(err){
+      showToast('Ağ hatası: ' + (err.message || err));
+    }
+  }
+
+  function buildQuery(params) {
+    const q = new URLSearchParams();
+    Object.entries(params).forEach(([k,v]) => {
+      if (v !== undefined && v !== null && v !== '') q.append(k, v);
+    });
+    const s = q.toString();
+    return s ? ('?' + s) : '';
+  }
+
+  // ---------------------------
+  // Auth
+  // ---------------------------
+  $('#loginForm').on('submit', async (e) => {
+    e.preventDefault();
+    const user = $('#loginUser').val().trim();
+    const pass = $('#loginPass').val();
+
+    $('#btnDoLogin').prop('disabled', true);
+
+    try{
+      const resp = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({ username: user, password: pass })
+      });
+      if(!resp.ok){
+        showToast('Giriş başarısız (' + resp.status + ')');
+      } else {
+        const data = await resp.json(); // { token: "...", user?: "..."}
+        if(!data.token){ showToast('Token alınamadı.'); return; }
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', data.user || user);
+        setWhoAmI();
+        bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+        showToast('Giriş başarılı.');
+      }
+    }catch(err){
+      showToast('Ağ hatası: ' + (err.message || err));
+    }finally{
+      $('#btnDoLogin').prop('disabled', false);
+    }
+  });
+
+  $('#btnLogout').on('click', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    setWhoAmI();
+    showToast('Çıkış yapıldı.');
+  });
+
+  // ---------------------------
+  // Report buttons
+  // ---------------------------
+  $('#btnProductsPdf').on('click', () => {
+    const q = $('#qProducts').val().trim();
+    const url = '/reportssub/products.pdf' + buildQuery({ q });
+    downloadAuth(url, 'urunler.pdf');
+  });
+
+  $('#btnProductsXlsx').on('click', () => {
+    const q = $('#qProducts').val().trim();
+    const url = '/reportssub/products.xlsx' + buildQuery({ q });
+    downloadAuth(url, 'urunler.xlsx');
+  });
+
+  $('#btnProducts2Pdf').on('click', () => {
+    const q = $('#qProducts2').val().trim();
+    const url = '/reportssub/productswithcategory.pdf' + buildQuery({ q });
+    downloadAuth(url, 'urunler_kategori.pdf');
+  });
+
+  $('#btnProducts2Xlsx').on('click', () => {
+    const q = $('#qProducts2').val().trim();
+    const url = '/reportssub/productswithcategory.xlsx' + buildQuery({ q });
+    downloadAuth(url, 'urunler_kategori.xlsx');
+  });
+
+  $('#btnMovementsPdf').on('click', () => {
+    const from = valToIsoSeconds($('#from').val());
+    const to   = valToIsoSeconds($('#to').val());
+    const warehouseId = $('#warehouseId').val().trim();
+    const url = '/reportssub/movements.pdf' + buildQuery({ from, to, warehouseId });
+    downloadAuth(url, 'stok_hareketleri.pdf');
+  });
+
+  $('#btnMovementsXlsx').on('click', () => {
+    const from = valToIsoSeconds($('#from').val());
+    const to   = valToIsoSeconds($('#to').val());
+    const warehouseId = $('#warehouseId').val().trim();
+    const url = '/reportssub/movements.xlsx' + buildQuery({ from, to, warehouseId });
+    downloadAuth(url, 'stok_hareketleri.xlsx');
+  });
+
+  // ---------------------------
+  // Init
+  // ---------------------------
+  document.addEventListener('DOMContentLoaded', () => {
+    setWhoAmI();
+
+    // Opsiyonel: default tarihleri bugünün 00:00 ve 23:59 yap
+    // (İstersen yorum satırını kaldır)
+    
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    const mm = pad(now.getMonth()+1);
+    const dd = pad(now.getDate());
+    $('#from').val(`${yyyy}-${mm}-${dd}T00:00`);
+    $('#to').val(`${yyyy}-${mm}-${dd}T23:59`);
+    
+  });
+</script>
+</body>
+</html>
