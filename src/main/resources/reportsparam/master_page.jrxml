@@ -5,7 +5,7 @@
               name="master_page" pageWidth="595" pageHeight="842" columnWidth="535"
               leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20"
               whenNoDataType="AllSectionsNoDetail"
-              uuid="11111111-1111-1111-1111-111111111111">
+              uuid="3f1f6b0c-9f2c-4a1c-8b90-2b4f4b4d8c9a">
 
     <!-- Master params -->
     <parameter name="P_TITLE" class="java.lang.String"/>
@@ -19,40 +19,57 @@
     <parameter name="P_FOOTER_REPORT" class="net.sf.jasperreports.engine.JasperReport"/>
     <parameter name="P_FOOTER_PARAMS" class="java.util.Map"/>
 
+    <!-- (A) Dummy query -->
+    <queryString><![CDATA[SELECT 1 AS one]]></queryString>
+
     <!-- HEADER -->
     <pageHeader>
-        <band height="60">
-            <subreport>
-                <reportElement x="0" y="0" width="535" height="60" uuid="a1a1a1a1-a1a1-1111-1111-a1a1a1a1a1a1"/>
-                <!-- DOĞRU SIRA -->
-                <parametersMapExpression><![CDATA[$P{P_HEADER_PARAMS}]]></parametersMapExpression>
+        <band height="60" splitType="Stretch">
+            <subreport isUsingCache="false">
+                <reportElement x="0" y="0" width="535" height="60" positionType="Float"
+                               uuid="c0c0e2d2-7b1f-47fb-9b04-1a5e2c7a4d31"/>
+                <parametersMapExpression><![CDATA[
+                    $P{P_HEADER_PARAMS} != null ? $P{P_HEADER_PARAMS} : new java.util.HashMap()
+                ]]></parametersMapExpression>
                 <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
                 <subreportExpression><![CDATA[$P{P_HEADER_REPORT}]]></subreportExpression>
             </subreport>
         </band>
     </pageHeader>
 
-    <!-- BODY -->
+    <!-- (İsteğe bağlı) BOŞ detail band -->
     <detail>
-        <band height="20" splitType="Prevent">
-            <subreport>
-                <reportElement x="0" y="0" width="535" height="20" uuid="b2b2b2b2-b2b2-2222-2222-b2b2b2b2b2b2"/>
-                <parametersMapExpression><![CDATA[$P{P_BODY_PARAMS}]]></parametersMapExpression>
-                <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-                <subreportExpression><![CDATA[$P{P_BODY_REPORT}]]></subreportExpression>
-            </subreport>
-        </band>
+        <band height="1"/>
     </detail>
 
-    <!-- FOOTER -->
+    <!-- FOOTER (summary'den ÖNCE gelmeli) -->
     <pageFooter>
-        <band height="30">
-            <subreport>
-                <reportElement x="0" y="0" width="535" height="30" uuid="c3c3c3c3-c3c3-3333-3333-c3c3c3c3c3c3"/>
-                <parametersMapExpression><![CDATA[$P{P_FOOTER_PARAMS}]]></parametersMapExpression>
+        <band height="30" splitType="Stretch">
+            <subreport isUsingCache="false">
+                <reportElement x="0" y="0" width="535" height="30" positionType="Float"
+                               uuid="a2c4d6e8-1f23-4b45-9c67-89ab0cde12f3"/>
+                <parametersMapExpression><![CDATA[
+                    $P{P_FOOTER_PARAMS} != null ? $P{P_FOOTER_PARAMS} : new java.util.HashMap()
+                ]]></parametersMapExpression>
                 <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
                 <subreportExpression><![CDATA[$P{P_FOOTER_REPORT}]]></subreportExpression>
             </subreport>
         </band>
     </pageFooter>
+
+    <!-- BODY artık summary'de -->
+    <summary>
+        <band height="10" splitType="Stretch">
+            <subreport isUsingCache="false">
+                <reportElement x="0" y="0" width="535" height="10" positionType="Float"
+                               uuid="8b6e3b28-0e2d-4c2b-8a5f-3b57f0f1a7a2"/>
+                <parametersMapExpression><![CDATA[
+                    $P{P_BODY_PARAMS} != null ? $P{P_BODY_PARAMS} : new java.util.HashMap()
+                ]]></parametersMapExpression>
+                <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                <subreportExpression><![CDATA[$P{P_BODY_REPORT}]]></subreportExpression>
+            </subreport>
+        </band>
+    </summary>
+
 </jasperReport>
