@@ -28,83 +28,75 @@
   </div>
 </nav>
 
-<main class="container my-4 page-max">
+<main class="container my-4">
+  <h3 class="mb-3">Raporlar</h3>
 
-  <div id="authWarn" class="alert alert-warning d-flex align-items-center gap-2 d-none" role="alert">
-    <span>⚠️</span>
-    <div>Raporları indirebilmek için önce <b>giriş</b> yapın.</div>
+  <!-- Uyarı -->
+  <div id="authWarn" class="alert alert-warning d-none">
+    Raporları indirebilmek için önce <b>giriş</b> yapın.
   </div>
 
   <div class="row g-4">
     <!-- Ürünler -->
     <div class="col-lg-6">
-      <div class="card shadow-sm">
-        <div class="card-header fw-semibold">Ürünler</div>
+      <div class="card h-100">
+        <div class="card-header">Ürünler</div>
         <div class="card-body">
-          <div class="row g-2 align-items-end">
-            <div class="col-md-7">
-              <label for="qProducts" class="form-label mb-1">Arama (kod/ad)</label>
-              <input class="form-control" id="qProducts" placeholder="örn: vida, 12x50, sku123">
-            </div>
-            <div class="col-md-5 d-flex gap-2">
-              <button class="btn btn-primary btn-w" id="btnProductsPdf">PDF</button>
-              <button class="btn btn-success btn-w" id="btnProductsXlsx">Excel</button>
-            </div>
+          <label class="form-label">Arama (kod/ad)</label>
+          <input class="form-control mb-3" id="qProducts" placeholder="örn: vida, 12x50, sku123">
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary flex-fill" id="btnProductsPdf">PDF</button>
+            <button class="btn btn-success flex-fill" id="btnProductsXlsx">Excel</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Ürün + Kategori -->
+    <!-- Ürünler + Kategori -->
     <div class="col-lg-6">
-      <div class="card shadow-sm">
-        <div class="card-header fw-semibold">Ürünler + Kategori</div>
+      <div class="card h-100">
+        <div class="card-header">Ürünler + Kategori</div>
         <div class="card-body">
-          <div class="row g-2 align-items-end">
-            <div class="col-md-7">
-              <label for="qProducts2" class="form-label mb-1">Arama (kategori/ürün adı)</label>
-              <input class="form-control" id="qProducts2" placeholder="örn: elektronik, vida">
-            </div>
-            <div class="col-md-5 d-flex gap-2">
-              <button class="btn btn-primary btn-w" id="btnProducts2Pdf">PDF</button>
-              <button class="btn btn-success btn-w" id="btnProducts2Xlsx">Excel</button>
-            </div>
+          <label class="form-label">Arama (kategori/ürün adı)</label>
+          <input class="form-control mb-3" id="qProducts2" placeholder="örn: elektronik, vida">
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary flex-fill" id="btnProducts2Pdf">PDF</button>
+            <button class="btn btn-success flex-fill" id="btnProducts2Xlsx">Excel</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Stok Hareketleri -->
-    <div class="col-lg-12">
-      <div class="card shadow-sm">
-        <div class="card-header fw-semibold">Stok Hareketleri</div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">Stok Hareketleri</div>
         <div class="card-body">
-          <div class="row g-3 align-items-end">
-            <div class="col-md-3">
-              <label for="from" class="form-label mb-1">Başlangıç</label>
-              <input class="form-control" type="datetime-local" id="from">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Başlangıç</label>
+              <input class="form-control" id="from" type="datetime-local">
             </div>
-            <div class="col-md-3">
-              <label for="to" class="form-label mb-1">Bitiş</label>
-              <input class="form-control" type="datetime-local" id="to">
+            <div class="col-md-4">
+              <label class="form-label">Bitiş</label>
+              <input class="form-control" id="to" type="datetime-local">
             </div>
-            <div class="col-md-2">
-              <label for="warehouseId" class="form-label mb-1">Depo ID (ops.)</label>
-              <input class="form-control" type="number" id="warehouseId" placeholder="örn: 2">
-            </div>
-            <div class="col-md-4 d-flex gap-2">
-              <button class="btn btn-primary btn-w" id="btnMovementsPdf">PDF</button>
-              <button class="btn btn-success btn-w" id="btnMovementsXlsx">Excel</button>
+            <div class="col-md-4">
+              <label class="form-label">Depo ID (ops.)</label>
+              <input class="form-control" id="warehouseId" type="number" min="1" placeholder="örn: 2">
             </div>
           </div>
-          <div class="form-text mt-2">
-            Tarih alanları boş bırakılırsa ilgili filtre uygulanmaz.
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-primary flex-fill" id="btnMovementsPdf">PDF</button>
+            <button class="btn btn-success flex-fill" id="btnMovementsXlsx">Excel</button>
           </div>
+          <div class="form-text mt-2">Tarih alanları boş bırakılırsa ilgili filtre uygulanmaz.</div>
         </div>
       </div>
     </div>
   </div>
 </main>
+
 
 <!-- Toasts -->
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">

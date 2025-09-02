@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="header_simple" pageWidth="535" pageHeight="60" columnWidth="535"
+              leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0"
+              whenNoDataType="AllSectionsNoDetail"
+              uuid="9d3e8b88-7c8f-4f2c-9a34-1f1f2b4d2a10">
+
+  <parameter name="HP_TITLE" class="java.lang.String"/>
+  <parameter name="HP_SUBTITLE" class="java.lang.String"/>
+
+  <title>
+    <band height="60">
+      <frame>
+        <reportElement x="0" y="0" width="535" height="60" backcolor="#F4F6F8" mode="Opaque"
+                       uuid="1a6b1b1a-0f5a-4a7f-8b3c-6f6d7b8c9a01"/>
+        <staticText>
+          <reportElement x="8" y="6" width="300" height="20" uuid="2b7c2c2b-1a6b-4c8d-9e4f-7a8b9c0d1e02"/>
+          <textElement><font size="12" isBold="true"/></textElement>
+          <text><![CDATA[$P{HP_TITLE}]]></text>
+        </staticText>
+        <textField>
+          <reportElement x="8" y="30" width="400" height="18" uuid="3c8d3d3c-2b7c-4d9e-af50-8b9c0d1e2f03"/>
+          <textFieldExpression><![CDATA[$P{HP_SUBTITLE}]]></textFieldExpression>
+        </textField>
+      </frame>
+    </band>
+  </title>
+</jasperReport>
