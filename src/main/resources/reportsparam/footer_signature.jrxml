@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="footer_signature" pageWidth="535" pageHeight="30" columnWidth="535"
+              leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0"
+              whenNoDataType="AllSectionsNoDetail"
+              uuid="4f60a1b2-c3d4-45e6-9718-09a1b2c3d4e5">
+
+  <parameter name="FP_NOTE" class="java.lang.String"/>
+
+  <summary>
+    <band height="30">
+      <line>
+        <reportElement x="0" y="0" width="535" height="1" forecolor="#CCCCCC"
+                       uuid="5a6b7c8d-9e0f-4011-a213-1b2c3d4e5f61"/>
+      </line>
+      <staticText>
+        <reportElement x="0" y="8" width="180" height="18" uuid="6b7c8d9e-0f10-4122-b324-2c3d4e5f6072"/>
+        <text><![CDATA[Onaylayan: ....................]]></text>
+      </staticText>
+      <textField>
+        <reportElement x="190" y="8" width="200" height="18" uuid="7c8d9e0f-1011-4233-c435-3d4e5f607183"/>
+        <textFieldExpression><![CDATA[$P{FP_NOTE}]]></textFieldExpression>
+      </textField>
+      <staticText>
+        <reportElement x="420" y="8" width="115" height="18" uuid="8d9e0f10-1112-4344-d546-4e5f60718294"/>
+        <textElement textAlignment="Right"/>
+        <text><![CDATA[İmza: __________]]></text>
+      </staticText>
+    </band>
+  </summary>
+</jasperReport>

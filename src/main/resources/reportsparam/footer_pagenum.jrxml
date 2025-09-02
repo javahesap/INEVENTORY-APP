@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="footer_pagenum" pageWidth="535" pageHeight="30" columnWidth="535"
+              leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0"
+              whenNoDataType="AllSectionsNoDetail"
+              uuid="e4f5a6b7-c8d9-40ea-bf21-4b5c6d7e8f99">
+
+  <parameter name="FP_NOTE" class="java.lang.String"/>
+
+  <summary>
+    <band height="30">
+      <line>
+        <reportElement x="0" y="0" width="535" height="1" forecolor="#CCCCCC"
+                       uuid="0a1b2c3d-4e5f-4601-9203-4a5b6c7d8e10"/>
+      </line>
+      <textField pattern="yyyy-MM-dd HH:mm">
+        <reportElement x="0" y="6" width="180" height="18" uuid="1b2c3d4e-5f60-4712-9304-5b6c7d8e9f11"/>
+        <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+      </textField>
+      <textField>
+        <reportElement x="190" y="6" width="200" height="18" uuid="2c3d4e5f-6071-4823-a405-6c7d8e9f0012"/>
+        <textFieldExpression><![CDATA[$P{FP_NOTE}]]></textFieldExpression>
+      </textField>
+      <textField evaluationTime="Report">
+        <reportElement x="420" y="6" width="115" height="18" uuid="3d4e5f60-7182-4934-b506-7d8e9f001123"/>
+        <textElement textAlignment="Right"/>
+        <textFieldExpression><![CDATA["Sayfa " + $V{PAGE_NUMBER} + " / " + $V{PAGE_NUMBER}]]></textFieldExpression>
+      </textField>
+    </band>
+  </summary>
+</jasperReport>

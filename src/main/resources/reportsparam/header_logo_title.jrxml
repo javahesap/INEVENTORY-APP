@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="header_logo_title" pageWidth="535" pageHeight="60" columnWidth="535"
+              leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0"
+              whenNoDataType="AllSectionsNoDetail"
+              uuid="aa2f9de7-1d8b-4b54-9e4f-8d5c1b2a3c44">
+
+  <parameter name="HP_TITLE" class="java.lang.String"/>
+  <parameter name="HP_SUBTITLE" class="java.lang.String"/>
+
+  <title>
+    <band height="60">
+      <frame>
+        <reportElement x="0" y="0" width="535" height="60" backcolor="#E9F0FB" mode="Opaque"
+                       uuid="b1c2d3e4-f5a6-47b8-9c0d-1e2f3a4b5c66"/>
+        <!-- İstersen logo image ekleyebilirsin -->
+        <textField>
+          <reportElement x="60" y="8" width="460" height="22" uuid="c2d3e4f5-a6b7-48c9-ad0e-2f3a4b5c6d77"/>
+          <textElement><font size="13" isBold="true"/></textElement>
+          <textFieldExpression><![CDATA[$P{HP_TITLE}]]></textFieldExpression>
+        </textField>
+        <textField>
+          <reportElement x="60" y="32" width="460" height="18" uuid="d3e4f5a6-b7c8-49da-be1f-3a4b5c6d7e88"/>
+          <textFieldExpression><![CDATA[$P{HP_SUBTITLE}]]></textFieldExpression>
+        </textField>
+      </frame>
+    </band>
+  </title>
+</jasperReport>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="products_body" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0" uuid="22222222-2222-2222-2222-222222222222">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mysqllocal.xml"/>
+	<parameter name="P_QUERY" class="java.lang.String"/>
+
+<queryString>
+   <![CDATA[
+       SELECT p.id AS id,
+              p.product_code AS product_code,
+              p.name AS name,
+              COALESCE(c.name,'') AS category,
+              COALESCE(p.unit,'') AS unit,
+              p.created_at AS created_at
+       FROM products p
+       LEFT JOIN categories c ON c.id = p.category_id
+       WHERE 1=1 $P!{P_QUERY}
+   ]]>
+</queryString>
+
+	<field name="id" class="java.lang.Long"/>
+	<field name="product_code" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="category" class="java.lang.String"/>
+	<field name="unit" class="java.lang.String"/>
+	<field name="created_at" class="java.sql.Timestamp"/>
+	<columnHeader>
+		<band height="20">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="535" height="20" backcolor="#EEEEEE" uuid="3d3d474a-1224-46f0-bf7e-94a9b713600f"/>
+				<staticText>
+					<reportElement x="0" y="0" width="40" height="20" uuid="ce20f4c1-2f82-4569-9279-8705423a5903"/>
+					<text><![CDATA[ID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="0" width="90" height="20" uuid="5a6a75a3-b1ed-4803-a196-e31a87e68ffc"/>
+					<text><![CDATA[Kod]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="160" height="20" uuid="cb7c31ab-5d30-4130-a6b4-f76b980b5e4c"/>
+					<text><![CDATA[Ad]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="290" y="0" width="120" height="20" uuid="63f7c70b-8eb0-46bb-a70d-3feb557ee495"/>
+					<text><![CDATA[Kategori]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="410" y="0" width="60" height="20" uuid="85c1de8d-fef4-471a-a03c-88590eb4ad82"/>
+					<text><![CDATA[Birim]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="470" y="0" width="65" height="20" uuid="2ec279b5-285d-4f4c-91ec-b1036baad25b"/>
+					<text><![CDATA[Oluş.]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18">
+			<textField>
+				<reportElement x="0" y="0" width="40" height="18" uuid="bfa78472-bc8c-464e-932b-a496bfaeac62"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="0" width="90" height="18" uuid="839667cb-de10-42d5-9017-1ce6c55c6a53"/>
+				<textFieldExpression><![CDATA[$F{product_code}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="130" y="0" width="160" height="18" uuid="dd750549-d378-41bf-bdb4-870bd8840f9e"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="0" width="120" height="18" uuid="30df45eb-cf3f-4c3b-93cb-ddd9e733bc7b"/>
+				<textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="410" y="0" width="60" height="18" uuid="8c00ce91-2f8a-480e-89eb-aaab70deb6c4"/>
+				<textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd">
+				<reportElement x="470" y="0" width="65" height="18" uuid="1235931f-4fd2-4c63-8ab5-a3e21a201ff6"/>
+				<textFieldExpression><![CDATA[$F{created_at}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="22">
+			<textField>
+				<reportElement x="0" y="2" width="300" height="18" uuid="b54f7dc5-1a6e-47ec-bf20-1a2abde85d84">
+					<printWhenExpression><![CDATA[$V{REPORT_COUNT} == 0]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Kayıt bulunamadı."]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
