@@ -1,5 +1,5 @@
 package com.example.inventory.security;
-
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,27 +36,32 @@ public class SecurityConfig {
     @Value("${app.cors.allowed-origins:*}")
     private String allowedOrigins;
 
-    @Bean
     
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                // 1) Statikler (HTML/CSS/JS) serbest
-                .requestMatchers(HttpMethod.GET, "/", "/index.html", "/**/*.html", "/assets/**").permitAll()
-                // 2) Login uçları serbest
-                .requestMatchers("/auth/**").permitAll()
-                // 3) Rapor API’leri KORUMALI (ADMIN önerilir)
-                .requestMatchers("/reports/**").hasRole("ADMIN")
-                // (İstersen sadece login olanlar görsün: .requestMatchers("/reports/**").authenticated() )
-                // 4) Diğer tüm API'ler korumalı
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+      http
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth
+          // Statik içerikler
+          .requestMatchers(HttpMethod.GET, "/", "/index.html", "/assets/**", "/webjars/**").permitAll()
 
-        return http.build();
+          // *.html altında derin klasörler: Ant matcher ile izin ver
+          .requestMatchers(new AntPathRequestMatcher("/**/*.html", "GET")).permitAll()
+
+          // Auth uçları serbest
+          .requestMatchers("/auth/**").permitAll()
+
+          // Raporlar korumalı
+          .requestMatchers("/reports/**").hasRole("ADMIN")
+
+          // diğer her şey korumalı
+          .anyRequest().authenticated()
+        )
+        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+      return http.build();
     }
 
     @Bean

@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: inv_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: inventorydb
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: inv_app
+    depends_on:
+      - mysql
+    environment:
+     SPRING_PROFILES_ACTIVE: prod
+     SPRING_JPA_HIBERNATE_DDL_AUTO: update
+     DB_URL: jdbc:mysql://mysql:3306/inventorydb?useUnicode=true&characterEncoding=utf8&connectionTimeZone=SERVER&allowPublicKeyRetrieval=true&useSSL=false
+     DB_USER: root
+     DB_PASS: rootpass
+     JWT_SECRET: ChangeThisSuperSecretKey_AtLeast32CharsLong
+
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:
